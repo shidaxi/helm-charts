@@ -34,3 +34,15 @@ resources:
 # extra_labels:
 #   app: "postwoman"
 #   env: "staging"
+deploy:
+  envs:
+    DATABASE_URL: 
+    API_KEY: 
+    AUTH_DOMAIN: 
+    PROJECT_ID: 
+    STORAGE_BUCKET: 
+    MESSAGING_SENDER_ID: 
+    APP_ID: 
+    MEASUREMENT_ID: 
+    # Base URL
+    BASE_URL: 
