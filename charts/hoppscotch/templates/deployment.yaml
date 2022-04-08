@@ -36,7 +36,7 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          envs:
+          env:
           {{- range $key, $value := .Values.deploy.envs }}
           - name: {{ $key | quote }}
             value: {{ $value | quote }}
