@@ -1,9 +1,25 @@
 apiVersion: v1
 entries:
+  hoppscotch:
+  - apiVersion: v1
+    appVersion: v1.9.9
+    created: "2022-04-08T10:32:15.975221+08:00"
+    description: A free, fast and beautiful API request builder
+    digest: 4f7494d78045237eff1606ad9db3c81f9cacd3b8bb9d5b727fe1990b687555ad
+    home: https://github.com/hoppscotch/hoppscotch
+    maintainers:
+    - email: no-reply@deliveryhero.com
+      name: javad-hajiani
+    name: hoppscotch
+    sources:
+    - https://github.com/hoppscotch/hoppscotch
+    urls:
+    - hoppscotch-0.2.8.tgz
+    version: 0.2.8
   nacos:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2022-03-21T14:05:54.687615+08:00"
+    created: "2022-04-08T10:32:15.976358+08:00"
     description: A Helm chart for Kubernetes
     digest: 1754c17749529b0fd5c9cd0b72d3a8cfb8d548f2fdfc68986c60a7bc0bd349f9
     maintainers:
@@ -13,4 +29,4 @@ entries:
     urls:
     - nacos-0.1.5.tgz
     version: 0.1.5
-generated: "2022-03-21T14:05:54.686177+08:00"
+generated: "2022-04-08T10:32:15.974543+08:00"
