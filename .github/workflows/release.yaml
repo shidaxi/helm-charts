@@ -20,7 +20,11 @@ jobs:
           version: v3.8.1
 
       - name: Build
-        run: mkdir out; cd out; helm package ../charts
+        run: |
+          mkdir out
+          cd out
+          for i in ../charts/*; do helm package ../charts/$i; done
+          helm repo index .
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
