@@ -3,9 +3,9 @@ entries:
   code-server:
   - apiVersion: v2
     appVersion: 4.4.0
-    created: "2022-06-08T15:12:42.378007738Z"
+    created: "2022-06-20T07:17:16.598214484Z"
     description: A Helm chart for coder/code-server
-    digest: 00a047e5bc32a5a85ca00705b071254ba28b5a7408fda5ba455236b9c00c22b7
+    digest: 7daf31560a2146ce5edbfcc83228d87f7a299e94b34bf687b8ea19938fe1abee
     name: code-server
     type: application
     urls:
@@ -14,9 +14,9 @@ entries:
   hoppscotch:
   - apiVersion: v1
     appVersion: v2.2.1
-    created: "2022-06-08T15:12:42.37855875Z"
+    created: "2022-06-20T07:17:16.599129874Z"
     description: A free, fast and beautiful API request builder, yes.
-    digest: bfbe515d50d801599bd137d65ac40ff27f6247d64cac33763fb609ad9b5c441c
+    digest: 0b387d26a90ffc7de9ae801578dc2177498e1b3001ce128b5890e051130472a5
     home: https://github.com/hoppscotch/hoppscotch
     maintainers:
     - email: no-reply@deliveryhero.com
@@ -30,9 +30,9 @@ entries:
   nacos:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2022-06-08T15:12:42.379418168Z"
+    created: "2022-06-20T07:17:16.599736967Z"
     description: A Helm chart for Kubernetes
-    digest: 3ca83d9d5d4b59763003a413cb8530290c30bcca039499cdbe0c71fa6b1f0b94
+    digest: ddcad0b0afc49569169c709ac792ed359d589cb1164c53c8d6db077ac80b0ad3
     maintainers:
     - name: arrowfeng
     - name: paderlol
@@ -40,4 +40,4 @@ entries:
     urls:
     - nacos-0.1.5.tgz
     version: 0.1.5
-generated: "2022-06-08T15:12:42.37711182Z"
+generated: "2022-06-20T07:17:16.596511604Z"
