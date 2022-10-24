@@ -3,20 +3,32 @@ entries:
   code-server:
   - apiVersion: v2
     appVersion: 4.4.0
-    created: "2022-06-20T07:17:16.598214484Z"
+    created: "2022-10-24T04:35:09.965345941Z"
     description: A Helm chart for coder/code-server
-    digest: 7daf31560a2146ce5edbfcc83228d87f7a299e94b34bf687b8ea19938fe1abee
+    digest: 33d2add1d35e3450a767eb1e4f51893d36e8a0a02395f155dc60162a1481f08e
     name: code-server
     type: application
     urls:
     - code-server-2.5.0.tgz
     version: 2.5.0
+  eth2-validator:
+  - apiVersion: v2
+    appVersion: 3.1.0
+    created: "2022-10-24T04:35:09.966709748Z"
+    description: Helm Chart for running ETH2 validator with Geth + Lighthouse on Kubernete
+      cluster under MIT license.
+    digest: dad110adf86a908d7e030d038f13352ef43f04e3c1419badb91835f9079e31e0
+    name: eth2-validator
+    type: application
+    urls:
+    - eth2-validator-1.0.0.tgz
+    version: 1.0.0
   hoppscotch:
   - apiVersion: v1
     appVersion: v2.2.1
-    created: "2022-06-20T07:17:16.599129874Z"
+    created: "2022-10-24T04:35:09.96725355Z"
     description: A free, fast and beautiful API request builder, yes.
-    digest: 0b387d26a90ffc7de9ae801578dc2177498e1b3001ce128b5890e051130472a5
+    digest: cd69e732a503643d3bf528c11622f28f9fcb807a4f0a89fc57d17c757ad661cc
     home: https://github.com/hoppscotch/hoppscotch
     maintainers:
     - email: no-reply@deliveryhero.com
@@ -30,9 +42,9 @@ entries:
   nacos:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2022-06-20T07:17:16.599736967Z"
+    created: "2022-10-24T04:35:09.967925453Z"
     description: A Helm chart for Kubernetes
-    digest: ddcad0b0afc49569169c709ac792ed359d589cb1164c53c8d6db077ac80b0ad3
+    digest: be4ecca7f1bdbece12b2f7a0bd4f46edd602fa15f82a8ddc81ba93b73284c3d8
     maintainers:
     - name: arrowfeng
     - name: paderlol
@@ -40,4 +52,4 @@ entries:
     urls:
     - nacos-0.1.5.tgz
     version: 0.1.5
-generated: "2022-06-20T07:17:16.596511604Z"
+generated: "2022-10-24T04:35:09.963885835Z"
