@@ -1,0 +1,299 @@
+# Default values for eth2-validator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+geth:
+  enabled: true
+
+  defaultArgs: [
+    "--datadir=/var/data/",
+    "--authrpc.addr=0.0.0.0",
+    "--authrpc.vhosts=*",
+    "--authrpc.jwtsecret=/var/secrets/jwt-secret",
+    "--metrics",
+    "--metrics.addr=0.0.0.0",
+  ]
+  extraArgs: []
+
+  persistent:
+    enabled: true
+    accessModes: [ "ReadWriteOnce" ]
+    size: 256Gi
+    storageClassName: standard
+
+  replicaCount: 1
+
+  image:
+    repository: ethereum/client-go
+    tag: v1.10.23
+    pullPolicy: IfNotPresent
+
+  # Name of k8s secret to use for jwt secret
+  jwtSecretName: "eth2-jwt-secret"
+
+  # The network to connect to
+  network: goerli
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  podSecurityContext:
+    fsGroup: 1000
+
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  hostPort:
+    # When hostPort is enabled, the 30303 p2p ports for TCP/UDP will be open on the node where
+    # the pod lives. As a result, you won't be able to run two instances of geth
+    # on the same node. In that case, you would probably want to use affinity to avoid
+    # schedule two of them on the same host. Also, you need to configure your network firewall
+    # rule to allow 30303 port access
+    enabled: true
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  livenessProbe:
+    httpGet:
+      path: /debug/metrics/prometheus
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /debug/metrics/prometheus
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+beacon:
+  enabled: true
+
+  defaultArgs: [
+    "lighthouse",
+    "beacon",
+    "--datadir", "/var/data",
+    "--staking",
+    "--metrics",
+    "--disable-upnp",
+    "--http-address", "0.0.0.0",
+    "--metrics-address", "0.0.0.0",
+    "--execution-jwt", "/var/secrets/jwt-secret",
+  ]
+  extraArgs: []
+
+  persistent:
+    enabled: true
+    accessModes: [ "ReadWriteOnce" ]
+    size: 256Gi
+    storageClassName: standard
+
+  replicaCount: 1
+
+  image:
+    repository: sigp/lighthouse
+    tag: v2.1.1
+    pullPolicy: IfNotPresent
+
+  # Name of k8s secret to use for jwt secret
+  jwtSecretName: "eth2-jwt-secret"
+
+  # The network to connect to
+  network: goerli
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  podSecurityContext:
+    fsGroup: 1000
+
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  service:
+    enabled: true
+    type: NodePort
+
+  livenessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  hostPort:
+    # When hostPort is enabled, the 9000 p2p ports for TCP/UDP will be open on the node where
+    # the pod lives. As a result, you won't be able to run two instances of beacon
+    # on the same node. In that case, you would probably want to use affinity to avoid
+    # schedule two of them on the same host. Also, you need to configure your network firewall
+    # rule to allow 9000 port access
+    enabled: true
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+validator:
+  enabled: true
+
+  keystoreSecretName: "eth2-validator-keystore"
+  passwordSecretName: "eth2-validator-password"
+
+  defaultArgs: [
+    "lighthouse",
+    "validator",
+    # Without this, slashing_protection.sqlite could be missing. In context of K8S, you are not
+    # going to share the same volume anyway, so it shouldn't matter to have slashing_protection.sqlite
+    # or not
+    "--init-slashing-protection",
+    "--datadir", "/var/data",
+    "--metrics",
+    "--metrics-address", "0.0.0.0",
+  ]
+  extraArgs: []
+
+  persistent:
+    enabled: true
+    accessModes: [ "ReadWriteOnce" ]
+    size: 32Gi
+    storageClassName: standard
+
+  image:
+    repository: sigp/lighthouse
+    tag: v2.1.1
+    pullPolicy: IfNotPresent
+
+  # The network to connect to
+  network: goerli
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name:
+
+  podSecurityContext:
+    fsGroup: 1000
+
+  securityContext:
+    capabilities:
+      drop:
+      - ALL
+    readOnlyRootFilesystem: true
+    runAsUser: 1000
+    runAsGroup: 1000
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  livenessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  readinessProbe:
+    httpGet:
+      path: /metrics
+      port: metrics
+    initialDelaySeconds: 60
+    failureThreshold: 5
+    periodSeconds: 10
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}

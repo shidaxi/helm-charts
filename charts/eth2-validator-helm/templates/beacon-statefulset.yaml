@@ -1,0 +1,110 @@
+{{- $root := . }}
+
+{{- with .Values.beacon }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $root.Release.Name }}-beacon
+  labels:
+    {{- include "eth2-validator.labels" $root | nindent 4 }}
+spec:
+  replicas: {{ .replicaCount }}
+  serviceName: {{ $root.Release.Name }}-beacon
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $root.Release.Name }}-beacon
+      app.kubernetes.io/instance: {{ $root.Release.Name }}
+      app.kubernetes.io/component: beacon
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ $root.Release.Name }}-beacon
+        app.kubernetes.io/instance: {{ $root.Release.Name }}
+        app.kubernetes.io/component: beacon
+    spec:
+    {{- with .imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "eth2-validator.beacon.serviceAccountName" $root }}
+      securityContext:
+        {{- toYaml .podSecurityContext | nindent 8 }}
+      containers:
+        - name: beacon
+          securityContext:
+            {{- toYaml .securityContext | nindent 12 }}
+          image: "{{ .image.repository }}:{{ .image.tag }}"
+          imagePullPolicy: {{ .image.pullPolicy }}
+          args:
+            {{- $executionEndpoint := .executionEndpoint | default (printf "http://%s-geth:8551" $root.Release.Name) -}}
+            {{- $feeRecipient := ( required ".validator.suggestedFeeRecipient is required" .suggestedFeeRecipient ) -}}
+            {{- $args := concat .defaultArgs .extraArgs (list "--network" .network "--execution-endpoint" $executionEndpoint "--suggested-fee-recipient" $feeRecipient) -}}
+            {{- toYaml $args | nindent 12 }}
+          ports:
+            - name: http
+              containerPort: 5052
+              protocol: TCP
+            - name: metrics
+              containerPort: 5054
+              protocol: TCP
+            - name: p2p-tcp
+              containerPort: 9000
+              protocol: TCP
+              {{- if .hostPort.enabled }}
+              hostPort: 9000
+              {{- end }}
+            - name: p2p-udp
+              containerPort: 9000
+              protocol: UDP
+              {{- if .hostPort.enabled }}
+              hostPort: 9000
+              {{- end }}
+          livenessProbe:
+            {{- toYaml .livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          volumeMounts:
+          - name: data-{{ .network }}
+            mountPath: /var/data
+          - name: jwt-secrets
+            mountPath: /var/secrets
+            readOnly: true
+      {{- with .nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes:
+      - name: jwt-secrets
+        secret:
+          secretName: {{ .jwtSecretName }}
+  
+  {{- if .persistent.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data-{{ .network }}
+    spec:
+      accessModes:
+        {{- toYaml .persistent.accessModes | nindent 8 }}
+      storageClassName: {{ .persistent.storageClassName }}
+      resources:
+        requests:
+          storage: {{ .persistent.size }}
+  {{- else }}
+      volumes:
+      - name: data
+        emptyDir: {}
+  {{- end }}
+
+{{- end }}
+{{- end }}
